@@ -1,0 +1,3 @@
+---
+- name: Deploy Finish
+  shell: echo "task finished" > {{ deployDirectory }}/res.txt

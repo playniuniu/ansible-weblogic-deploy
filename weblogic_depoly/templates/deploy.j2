@@ -1,0 +1,84 @@
+import re
+
+def connectToDomain():
+    try:
+        connect("{{ username }}", "{{ password }}", "{{ adminUrl }}")
+        print('Successfully connected to the domain')
+    except:
+        print('The domain is unreacheable. Please try again')
+        exit()
+
+
+def appstatus(deploymentName, deploymentTarget):
+    try:
+        domainRuntime()
+        cd('domainRuntime:/AppRuntimeStateRuntime/AppRuntimeStateRuntime')
+        currentState = cmo.getCurrentState(deploymentName, deploymentTarget)
+        return currentState
+    except:
+        print('Error in getting current status of ' + deploymentName)
+        exit()
+
+
+def undeployApplication(deploymentName, deploymentTarget):
+    try:
+        print('stopping and undeploying ..' + deploymentName)
+        stopApplication(deploymentName, targets=deploymentTarget)
+        undeploy(deploymentName, targets=deploymentTarget)
+    except:
+        print('Error during the stop and undeployment of ' + deploymentName)
+        exit()
+
+
+def deployApplication(deploymentName, deploymentTarget, deploymentFile):
+    try:
+        print('Deploying the application ' + deploymentName)
+        deploy(deploymentName, deploymentFile, targets=deploymentTarget)
+        startApplication(deploymentName)
+    except:
+        print('Error during the deployment of ' + deploymentName)
+        exit()
+
+
+def deployUndeployMain(deploymentName, deploymentTarget, deploymentFile):
+
+    appList = re.findall(deploymentName, ls('/AppDeployments'))
+
+    if len(appList) >= 1:
+        print('Application' + deploymentName + ' Found on server ' + deploymentTarget + ', undeploying application..')
+
+        print('==============================================================================')
+        print('Application Already Exists, Undeploying...')
+        print('==============================================================================')
+        undeployApplication(deploymentName, deploymentTarget)
+
+        print('==============================================================================')
+        print('Redeploying Application ' + deploymentName + ' on' + deploymentTarget + ' server...')
+        print('==============================================================================')
+        deployApplication(deploymentName, deploymentTarget, deploymentFile)
+
+    else:
+        print('==============================================================================')
+        print('No application with same name...')
+        print('Deploying Application ' + deploymentName + ' on' + deploymentTarget + ' server...')
+        print('==============================================================================')
+        deployApplication(deploymentName, deploymentTarget, deploymentFile)
+
+
+if __name__ == '__main__' or __name__ == 'main':
+    print('==============================================================================')
+    print('Connecting to Admin Server...')
+    print('==============================================================================')
+    connectToDomain()
+
+    print('==============================================================================')
+    print('Starting Deployment...')
+    print('==============================================================================')
+    deployUndeployMain("{{ deploymentName }}", "{{ deploymentTarget }}", "{{ deployDirectory }}/{{ deploymentFile }}")
+
+    print('==============================================================================')
+    print('Execution completed...')
+    print('==============================================================================')
+    
+    disconnect()
+    exit()

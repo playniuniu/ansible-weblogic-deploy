@@ -1,0 +1,26 @@
+---
+- name: Create deploy directory
+  file: dest={{ deployDirectory }} mode=755 state=directory
+  register: createdir
+
+- name: Copy war file to directory
+  copy: src={{ deploymentFile }} dest={{ deployDirectory }} mode=644 backup=yes
+  when: createdir|success
+  register: copywar
+
+- name: Copy deploy script
+  template: src=deploy.j2 dest={{ deployDirectory }}/deploy.py mode=755
+  when: copywar|success
+  register: copyscript
+
+- name: Run deploy command
+  shell: wlst {{ deployDirectory }}/deploy.py
+  when: copyscript|success
+  register: deployout
+  notify: Deploy Finish
+
+- name: Deploy Output
+  debug: msg="{{ deployout.stdout_lines }}"
+
+- name: Deploy Error
+  debug: msg="{{ deployout.stderr }}"
