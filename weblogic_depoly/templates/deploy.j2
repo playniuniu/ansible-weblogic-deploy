@@ -33,7 +33,7 @@ def undeployApplication(deploymentName, deploymentTarget):
 def deployApplication(deploymentName, deploymentTarget, deploymentFile):
     try:
         print('Deploying the application ' + deploymentName)
-        deploy(deploymentName, deploymentFile, targets=deploymentTarget)
+        deploy(deploymentName, deploymentFile, targets=deploymentTarget, remote='true', upload='true')
         startApplication(deploymentName)
     except:
         print('Error during the deployment of ' + deploymentName)
