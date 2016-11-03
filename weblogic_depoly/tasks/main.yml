@@ -4,7 +4,7 @@
   register: createdir
 
 - name: Copy war file to directory
-  copy: src={{ deploymentFile }} dest={{ deployDirectory }} mode=644 backup=yes
+  copy: src={{ deploymentFile }} dest={{ deployDirectory }} mode=644
   when: createdir|success
   register: copywar
 
