@@ -2,6 +2,7 @@ pipeline{
 	agent any
 
 	stages{
+		stage(build) {
 		steps {
 			checkout scm
 			script {
@@ -16,6 +17,7 @@ pipeline{
                                    ])
 				tagskit = sh(script: "git tag --sort=v:refname | tail -1 ", returnStdout: true).trim()
 				sh "git checkout tags/${tagskit}"
+				}
 			}
 		}
 	}
