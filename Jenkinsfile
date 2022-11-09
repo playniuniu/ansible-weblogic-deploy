@@ -3,9 +3,6 @@ pipeline{
 
 	stages{
 		stage('Version'){
-            		when {
-            		expression { "${env.GIT_BRANCH}" == "origin/master"}
-            		}
                   steps {
                     script{
                         sh '''
