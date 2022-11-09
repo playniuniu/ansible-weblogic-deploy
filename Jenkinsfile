@@ -2,6 +2,19 @@ pipeline{
 	agent any
 
 	stages{
+		stage('Version'){
+            		when {
+            		expression { "${env.GIT_BRANCH}" == "origin/master"}
+            		}
+                  steps {
+                    script{
+                        sh '''
+                        chmod +x version.sh
+                        ./version.sh
+                         '''
+                         }
+                  }
+             }
 		stage(build) {
 		steps {
 			checkout scm
@@ -17,6 +30,7 @@ pipeline{
                                    ])
 				tagskit = sh(script: "git tag --sort=v:refname | tail -1 ", returnStdout: true).trim()
 				sh "git checkout tags/${tagskit}"
+				echo "new version"
 				}
 			}
 		}
