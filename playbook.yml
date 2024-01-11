@@ -1,6 +1,6 @@
 ---
 - hosts: weblogic
   become: true
-  become_user: oracle
+  become_user: ubuntu
   roles:
     - weblogic_depoly
